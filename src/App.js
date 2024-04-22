@@ -8,21 +8,17 @@ function Square({ value, handleClick }) {
   );
 }
 
-export default function Board() {
-  const [isXNext, setIsXNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
-
+function Board({ isXNext, currentSquares, onPlay }) {
   function onSquareClick(i) {
-    if (squares[i] || checkWinner(squares)) return;
+    if (currentSquares[i] || checkWinner(currentSquares)) return;
 
-    const nextSquares = squares.slice();
+    const nextSquares = currentSquares.slice();
     nextSquares[i] = isXNext ? "X" : "O";
 
-    setIsXNext(!isXNext);
-    setSquares(nextSquares);
+    onPlay(nextSquares);
   }
 
-  const winner = checkWinner(squares);
+  const winner = checkWinner(currentSquares);
   let status;
 
   if (winner) {
@@ -36,21 +32,76 @@ export default function Board() {
       <div className="status">{status}</div>
 
       <div className="board-row">
-        <Square value={squares[0]} handleClick={() => onSquareClick(0)} />
-        <Square value={squares[1]} handleClick={() => onSquareClick(1)} />
-        <Square value={squares[2]} handleClick={() => onSquareClick(2)} />
+        <Square
+          value={currentSquares[0]}
+          handleClick={() => onSquareClick(0)}
+        />
+        <Square
+          value={currentSquares[1]}
+          handleClick={() => onSquareClick(1)}
+        />
+        <Square
+          value={currentSquares[2]}
+          handleClick={() => onSquareClick(2)}
+        />
       </div>
 
       <div className="board-row">
-        <Square value={squares[3]} handleClick={() => onSquareClick(3)} />
-        <Square value={squares[4]} handleClick={() => onSquareClick(4)} />
-        <Square value={squares[5]} handleClick={() => onSquareClick(5)} />
+        <Square
+          value={currentSquares[3]}
+          handleClick={() => onSquareClick(3)}
+        />
+        <Square
+          value={currentSquares[4]}
+          handleClick={() => onSquareClick(4)}
+        />
+        <Square
+          value={currentSquares[5]}
+          handleClick={() => onSquareClick(5)}
+        />
       </div>
 
       <div className="board-row">
-        <Square value={squares[6]} handleClick={() => onSquareClick(6)} />
-        <Square value={squares[7]} handleClick={() => onSquareClick(7)} />
-        <Square value={squares[8]} handleClick={() => onSquareClick(8)} />
+        <Square
+          value={currentSquares[6]}
+          handleClick={() => onSquareClick(6)}
+        />
+        <Square
+          value={currentSquares[7]}
+          handleClick={() => onSquareClick(7)}
+        />
+        <Square
+          value={currentSquares[8]}
+          handleClick={() => onSquareClick(8)}
+        />
+      </div>
+    </>
+  );
+}
+
+export default function Game() {
+  const [isXNext, setIsXNext] = useState(true);
+  const [squares, setSquares] = useState([Array(9).fill(null)]);
+  const currentSquares = squares[squares.length - 1];
+
+  function handleGameOnClick(nextSquares) {
+    setSquares([...squares, nextSquares]);
+    setIsXNext(!isXNext);
+  }
+
+  return (
+    <>
+      <div className="game">
+        <div className="game-board">
+          <Board
+            isXNext={isXNext}
+            currentSquares={currentSquares}
+            onPlay={handleGameOnClick}
+          />
+        </div>
+      </div>
+      <div className="game-info">
+        <ol>{/* TODO */}</ol>
       </div>
     </>
   );
