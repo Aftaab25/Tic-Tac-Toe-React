@@ -81,13 +81,28 @@ function Board({ isXNext, currentSquares, onPlay }) {
 
 export default function Game() {
   const [isXNext, setIsXNext] = useState(true);
-  const [squares, setSquares] = useState([Array(9).fill(null)]);
-  const currentSquares = squares[squares.length - 1];
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const currentSquares = history[history.length - 1];
 
   function handleGameOnClick(nextSquares) {
-    setSquares([...squares, nextSquares]);
+    setHistory([...history, nextSquares]);
     setIsXNext(!isXNext);
   }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = "Go to move #" + move;
+    } else {
+      description = "Go to Game start";
+    }
+
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
 
   return (
     <>
@@ -99,14 +114,15 @@ export default function Game() {
             onPlay={handleGameOnClick}
           />
         </div>
-      </div>
-      <div className="game-info">
-        <ol>{/* TODO */}</ol>
+        <div className="game-info">
+          <ol>{moves}</ol>
+        </div>
       </div>
     </>
   );
 }
 
+// Function to Check Winner
 function checkWinner(squares) {
   const lines = [
     [0, 1, 2],
